@@ -68,36 +68,30 @@ def peliculas_idioma(idioma:str):
 def recomendacion(titulo:str):
     df = pd.read_csv('ML_data.csv')
     df = df.drop('Unnamed: 0', axis=1)
-
-    generos_df = df['genres'].str.join(sep='|').str.get_dummies()
+    generos = df['genres'].str.join(sep='|').str.get_dummies()
+    pelicula_generos = df.loc[df['title'] == titulo]['genres'].values
+    #controlamos que la pelicula se encuentre en el dataset
+    if len(pelicula_generos) == 0:
+        a = '<3'
+        return {"No se encontró la película ":titulo, 'ten en cuenta que el dataset es un 1/5 de el original por la cantidad de recursos consumidos en render': a}
     
-    selected_genres = df.loc[df['title'] == titulo]['genres'].values
-    if len(selected_genres) == 0:
-        return {"No se encontró la película ":titulo}
     #calculamos la similitud de generos entre peliculas
-    selected_genres = ast.literal_eval(selected_genres[0])
-    df['genre_similarity'] = df['genres'].apply(lambda x: len(set(selected_genres) & set(ast.literal_eval(x))) / len(set(selected_genres) | set(ast.literal_eval(x))))
+    pelicula_generos = ast.literal_eval(pelicula_generos[0])
+    df['genres_similar'] = df['genres'].apply(lambda x: len(set(pelicula_generos) & set(ast.literal_eval(x))) / len(set(pelicula_generos) | set(ast.literal_eval(x))))
     
-    #Se crea una variable binaria llamada 'same_series' que indica si las películas pertenecen a la misma serie. 
-    #Esto se determina verificando si el título seleccionado se encuentra en el título de otras películas.
-    df['same_series'] = df['title'].apply(lambda x: 1 if titulo.lower() in x.lower() else 0)
-    
-   
-    features_df = pd.concat([generos_df, df['vote_average'], df['genre_similarity'], df['same_series']], axis=1)
-#Se utiliza el algoritmo de k-NN (k-Nearest Neighbors) para encontrar películas similares.
-#  Se establece el valor de k en 6. Se entrena el modelo k-NN utilizando el dataframe features_df. 
-# Luego, se encuentra el índice de las películas más similares a la película seleccionada utilizando
-#  el método kneighbors y se guarda en la variable indices.
-    
-    k = 6
-    knn = NearestNeighbors(n_neighbors=k+1, algorithm='auto')
-    knn.fit(features_df)
-    indices = knn.kneighbors(features_df.loc[df['title'] == titulo])[1].flatten()
-    recommended_movies = list(df.iloc[indices]['title'])
+    #Se crea 'Misma_franquicia' para ver si las películas pertenecen a la misma franquicia. 
+    #Esto se determina verificando si el título seleccionado se encuentra en el título de otras películas,
+    #aunque no es 100 porciento confiable, ya que podria no tener el mismo nombre.
+    df['Misma_franquicia'] = df['title'].apply(lambda x: 1 if titulo.lower() in x.lower() else 0)
+    features_df = pd.concat([generos, df['vote_average'], df['genres_similar'], df['Misma_franquicia']], axis=1)
 
-    #selected_score = df.loc[df['title'] == selected_title]['vote_average'].values[0]
-    recommended_movies = sorted(recommended_movies, key=lambda x: (df.loc[df['title'] == x]['same_series'].values[0], df.loc[df['title'] == x]['vote_average'].values[0], df.loc[df['title'] == x]['genre_similarity'].values[0]), reverse=True)
-    recommended_movies = [movie for movie in recommended_movies if movie != titulo]
-   # Se crea una lista de películas recomendadas a partir de los índices encontrados en el paso anterior.
-   # La lista contiene los títulos de las películas correspondientes a los índices.
-    return recommended_movies
+    #Se utiliza el algoritmo de k-NN para encontrar películas similares.
+    k = 6
+    kn = NearestNeighbors(n_neighbors=k+1, algorithm='auto')
+    kn.fit(features_df)
+    indices = kn.kneighbors(features_df.loc[df['title'] == titulo])[1].flatten()
+    # Se crea una lista de películas recomendadas a partir de los indices encontrados en el paso anterior.
+    peliculas_recomendadas = list(df.iloc[indices]['title'])
+    peliculas_recomendadas = sorted(peliculas_recomendadas, key=lambda x: (df.loc[df['title'] == x]['Misma_franquicia'].values[0], df.loc[df['title'] == x]['vote_average'].values[0], df.loc[df['title'] == x]['genres_similar'].values[0]), reverse=True)
+    peliculas_recomendadas = [movie for movie in peliculas_recomendadas if movie != titulo]
+    return {'Pelicula':titulo, 'recomendacion': peliculas_recomendadas}
