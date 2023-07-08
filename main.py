@@ -1,5 +1,10 @@
 from fastapi import FastAPI
 import pandas as pd
+from sklearn.neighbors import NearestNeighbors
+import sklearn
+import ast
+import requests
+
 app = FastAPI()
 
 @app.get("/peliculas_duracion/{pelicula}")
@@ -58,3 +63,41 @@ def peliculas_idioma(idioma:str):
     df_idiomas = df.loc[df['original_language'] == idioma]
     if int(len(df_idiomas)) == 0: return {'idioma no disponible':idioma}
     else: return {'idioma':idioma, 'cantidad de peliculas':int(len(df_idiomas))}
+
+@app.get("/recomendacion/{titulo}")
+def recomendacion(titulo:str):
+    df = pd.read_csv('ML_data.csv')
+    df = df.drop('Unnamed: 0', axis=1)
+
+    generos_df = df['genres'].str.join(sep='|').str.get_dummies()
+    
+    selected_genres = df.loc[df['title'] == titulo]['genres'].values
+    if len(selected_genres) == 0:
+        return {"No se encontró la película ":titulo}
+    #calculamos la similitud de generos entre peliculas
+    selected_genres = ast.literal_eval(selected_genres[0])
+    df['genre_similarity'] = df['genres'].apply(lambda x: len(set(selected_genres) & set(ast.literal_eval(x))) / len(set(selected_genres) | set(ast.literal_eval(x))))
+    
+    #Se crea una variable binaria llamada 'same_series' que indica si las películas pertenecen a la misma serie. 
+    #Esto se determina verificando si el título seleccionado se encuentra en el título de otras películas.
+    df['same_series'] = df['title'].apply(lambda x: 1 if titulo.lower() in x.lower() else 0)
+    
+   
+    features_df = pd.concat([generos_df, df['vote_average'], df['genre_similarity'], df['same_series']], axis=1)
+#Se utiliza el algoritmo de k-NN (k-Nearest Neighbors) para encontrar películas similares.
+#  Se establece el valor de k en 6. Se entrena el modelo k-NN utilizando el dataframe features_df. 
+# Luego, se encuentra el índice de las películas más similares a la película seleccionada utilizando
+#  el método kneighbors y se guarda en la variable indices.
+    
+    k = 6
+    knn = NearestNeighbors(n_neighbors=k+1, algorithm='auto')
+    knn.fit(features_df)
+    indices = knn.kneighbors(features_df.loc[df['title'] == titulo])[1].flatten()
+    recommended_movies = list(df.iloc[indices]['title'])
+
+    #selected_score = df.loc[df['title'] == selected_title]['vote_average'].values[0]
+    recommended_movies = sorted(recommended_movies, key=lambda x: (df.loc[df['title'] == x]['same_series'].values[0], df.loc[df['title'] == x]['vote_average'].values[0], df.loc[df['title'] == x]['genre_similarity'].values[0]), reverse=True)
+    recommended_movies = [movie for movie in recommended_movies if movie != titulo]
+   # Se crea una lista de películas recomendadas a partir de los índices encontrados en el paso anterior.
+   # La lista contiene los títulos de las películas correspondientes a los índices.
+    return recommended_movies

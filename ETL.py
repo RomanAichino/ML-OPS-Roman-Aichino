@@ -86,4 +86,21 @@ df = df.drop('homepage', axis=1)
 #exportamos el dataset con los cambios pedidos ya realizados
 df.to_csv('processed_data.csv')
 
-#<3
+#ahora crearemos el dataset para un modelo de recomendacion
+
+df = df.drop('id', axis=1)
+df = df.drop('release_year', axis=1)
+df = df.drop('production_countries', axis=1)
+df = df.drop('release_date', axis=1)
+df = df.drop('revenue', axis=1)
+df = df.drop('status', axis=1)
+df = df.drop('vote_count', axis=1)
+df = df.drop('overview', axis=1)
+df = df.drop('budget', axis=1)
+df = df.drop('tagline', axis=1)
+df = df.drop('return', axis=1)
+
+df = df.dropna()
+df = df[0:5000]
+
+df.to_csv('ML_data.csv')
