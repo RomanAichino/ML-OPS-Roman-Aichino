@@ -86,7 +86,7 @@ def recomendacion(titulo:str):
     features_df = pd.concat([generos, df['vote_average'], df['genres_similar'], df['Misma_franquicia']], axis=1)
 
     #Se utiliza el algoritmo de k-NN para encontrar películas similares.
-    k = 6
+    k = 5
     kn = NearestNeighbors(n_neighbors=k+1, algorithm='auto')
     kn.fit(features_df)
     indices = kn.kneighbors(features_df.loc[df['title'] == titulo])[1].flatten()
