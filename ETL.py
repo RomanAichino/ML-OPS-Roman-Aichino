@@ -99,8 +99,7 @@ df = df.drop('overview', axis=1)
 df = df.drop('budget', axis=1)
 df = df.drop('tagline', axis=1)
 df = df.drop('return', axis=1)
+df = df.drop('belongs_to_collection', axis=1)
 
 df = df.dropna()
-#df = df[0:5000]
-
 df.to_csv('ML_data.csv')
