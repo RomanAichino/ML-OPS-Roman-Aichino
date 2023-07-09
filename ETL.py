@@ -87,7 +87,7 @@ df = df.drop('homepage', axis=1)
 df.to_csv('processed_data.csv')
 
 #ahora crearemos el dataset para un modelo de recomendacion
-
+#comenzamos quitando las columnas que no voy a utilizar
 df = df.drop('id', axis=1)
 df = df.drop('release_year', axis=1)
 df = df.drop('production_countries', axis=1)
@@ -101,5 +101,9 @@ df = df.drop('tagline', axis=1)
 df = df.drop('return', axis=1)
 df = df.drop('belongs_to_collection', axis=1)
 
+#quitamos las columnas con valores nulos y separamos las primeras 20000 filas para un mejor funcionamiento
 df = df.dropna()
+df = df[0:20000]
+
+#exportamos el dataset
 df.to_csv('ML_data.csv')
