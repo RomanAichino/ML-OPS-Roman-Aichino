@@ -101,6 +101,6 @@ df = df.drop('tagline', axis=1)
 df = df.drop('return', axis=1)
 
 df = df.dropna()
-df = df[0:5000]
+#df = df[0:5000]
 
 df.to_csv('ML_data.csv')
