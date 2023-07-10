@@ -76,30 +76,19 @@ df['budget'] = pd.to_numeric(df['budget'], errors='coerce')
 df['return'] = np.where(np.logical_or(df['revenue'] == 0, df['budget'] == 0), 0, df['revenue'] / df['budget']) 
 
 # dropeamos las columnas que no vamos a usar
-df = df.drop('video', axis=1)
-df = df.drop('imdb_id', axis=1)
-df = df.drop('adult', axis=1)
-df = df.drop('original_title', axis=1)
-df = df.drop('poster_path', axis=1)
-df = df.drop('homepage', axis=1)
+columnas_drop1 = ['video', 'imdb_id', 'adult', 'original_title', 'poster_path', 'homepage']
+df = df.drop(columnas_drop1, axis=1)
 
 #exportamos el dataset con los cambios pedidos ya realizados
 df.to_csv('processed_data.csv')
 
 #ahora crearemos el dataset para un modelo de recomendacion
 #comenzamos quitando las columnas que no voy a utilizar
-df = df.drop('id', axis=1)
-df = df.drop('release_year', axis=1)
-df = df.drop('production_countries', axis=1)
-df = df.drop('release_date', axis=1)
-df = df.drop('revenue', axis=1)
-df = df.drop('status', axis=1)
-df = df.drop('vote_count', axis=1)
-df = df.drop('overview', axis=1)
-df = df.drop('budget', axis=1)
-df = df.drop('tagline', axis=1)
-df = df.drop('return', axis=1)
-df = df.drop('belongs_to_collection', axis=1)
+columnas_drop2 = ['id', 'release_year', 'production_countries', 'release_date', 'revenue',
+                   'status', 'vote_count', 'overview', 'budget', 'tagline',
+                   'return', 'belongs_to_collection']
+
+df = df.drop(columnas_drop2, axis=1)
 
 #quitamos las columnas con valores nulos y separamos las primeras 20000 filas para un mejor funcionamiento
 df = df.dropna()
