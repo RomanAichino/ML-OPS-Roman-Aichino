@@ -6,6 +6,8 @@ Aclaración: sé que en las indicaciónes me pedian una sexta función, pero com
 
 Siguiendo con la explicación, debo mencionar que para la preparación del dataset utilizado para el sistema de recomendación tuve que ocupar el rol de analista de datos, durante ese tramo fuí guíandome en graficos y otros aspectos como la calidad de las columnas(que no haya tantos valores nulos), al final decidí que la mayoría de las columnas no me aportaban nada a la hora de recomendar una película, por lo cual terminé por usar solo unas 4 o 5 columnas de todo el dataset. Una vez terminado el set de datos para el sistema, me incliné por usar el sistema K-Neighbors ya que me parecía el mas simple para esto y porque compañeros con mas conocimientos del tema me lo recomendaron.
 
+Video explicativo: https://www.youtube.com/watch?v=6Bi1hk0J6qo
+
 Render: https://ml-ops-roman-aichino.onrender.com/
 
 Repocitorio: https://github.com/RomanAichino/ML-OPS-Roman-Aichino
