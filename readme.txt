@@ -12,7 +12,7 @@ Render: https://ml-ops-roman-aichino.onrender.com/
 
 Repocitorio: https://github.com/RomanAichino/ML-OPS-Roman-Aichino
 
-Descripción los cada archivo:
+Descripción de cada archivo:
 ETL.py: aquí realice la extracción, todas las modificaciones e importación de los dos dataset.
 main.py: aquí estan las 5 funciónes de consulta y el sistema de recomendación de peliculas en forma de una sexta función.
 movies_dataset.csv: es el dataset original, sin ninguna modificación.
