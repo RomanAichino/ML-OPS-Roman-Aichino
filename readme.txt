@@ -1,4 +1,4 @@
-<h3>Buenas, soy Roman Aichino y este es mi proyecto sobre Ingeniería de datos para el bootcamp 'SoyHenry'.</h3>
+Buenas, soy Roman Aichino y este es mi proyecto sobre Ingeniería de datos para el bootcamp 'SoyHenry'.
 
 El proyecto trata sobre la creación de un servicio de consulta sobre un dataset de películas, mi rol empieza siendo el de un desarrollador ETL, donde recibo unos datos bastante desprolijos y los acomodo con las indicaciones recibidas desde el departamento de análisis de datos para luego exportarlo en dos datasets (uno para las funciones de consulta y otro para un futuro sistema de recomendación); una vez terminada esa parte, mi rol avanza hacia un MLOps en donde mi tarea principal es desarrollar un sistema de recomendación de películas, no sin antes levantar una API utilizando la plataforma de render.com y crear 5 funciones en donde podremos consultar datos de uno de los dataset ya modificados.
 
